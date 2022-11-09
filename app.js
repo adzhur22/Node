@@ -14,7 +14,6 @@ function sorter(path) {
                 if (err) {
                     console.log(err, "ERR");
                 }
-                console.log(stats.isDirectory())
                 if (stats.isDirectory()) {
                     sorter(`${path}/${file}`);
                 }
