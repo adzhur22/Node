@@ -73,19 +73,20 @@ app.post('/user', (req, res) => {
             oldData = JSON.parse(oldData);
             oldData.push(data);
             await fs.writeFile(dataBasePath, JSON.stringify(oldData))
+            return oldData
         } catch (e) {
             console.log(e)
         }
-
     }
 
     if (data.name.length > 2 && data.age > 0) {
-        addUser();
-        res.end('done');
+        addUser().then(value => {
+            res.json(value);
+        })
+
     } else {
         res.end('bad request!')
     }
-
 })
 
 app.delete('/user/:id',(req, res) => {
@@ -94,7 +95,7 @@ app.delete('/user/:id',(req, res) => {
     const deleteById = async () => {
         try {
             let data = JSON.parse(await fs.readFile(dataBasePath));
-                if(data.length > id && id >= 0) {
+                if(!isNaN(+id) && data.length > id && id >= 0) {
                     console.log(data);
                     data.splice(id, 1);
                     await fs.writeFile(dataBasePath, JSON.stringify(data));
@@ -124,18 +125,25 @@ app.patch('/user/:id', (req, res)=>{
     const changeById = async () => {
         try {
             let data = JSON.parse(await fs.readFile(dataBasePath));
-            data.splice(id,1, object);
-            await fs.writeFile(dataBasePath,data);
-            return data
+                if(!isNaN(+id) && data.length > id && id >= 0){
+                    data.splice(id,1, object);
+                      await fs.writeFile(dataBasePath,JSON.stringify(data));
+                      return data
+                }else{
+                    return 'Bad request!!! Change ID'
+                }
         }catch (e) {
             console.log(e)
         }
 
-
     };
 
     if (object.name.length > 2 && object.age > 0) {
-        changeById();
+        changeById().then(value => {
+            res.json(value)
+        }).catch(reason => {
+            res.json(reason);
+        })
 
     } else {
         res.end('bad request! Change DATA!')
