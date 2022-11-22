@@ -18,7 +18,7 @@ app.use('/users', userRouter);
 
 app.use((err, req, res, next) => {
 
-    res.json()
+    res.json(err.message);
 });
 
 
