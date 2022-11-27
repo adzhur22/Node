@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const userRouter = require('./router/user.router');
+const authRouter = require('./router/aubt.router');
 const configs = require('./config/config');
 
 const app = express();
@@ -14,15 +15,15 @@ app.get('/', (req, res) => {
     res.json('Hello')
 });
 
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 
 app.use((err, req, res, next) => {
-
-    res.json(err.message);
+    res.status(err.status || 500).json(err.message || 'something wrong');
 });
 
 
 app.listen(configs.PORT, async ()=>{
-    await mongoose.connect('mongodb://localhost:27017/testProject');
+    await mongoose.connect(configs.MONGO_Url);
     console.log(`Server listen ${configs.PORT} !`)
 });
