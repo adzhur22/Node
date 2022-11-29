@@ -22,7 +22,7 @@ module.exports = {
 
     refresh: async (req, res, next) => {
         try {
-            const {refreshToken , _User_Id} = req.tokenInfo;
+            const {refreshToken, _User_Id} = req.tokenInfo;
 
             await dataBaseOauth.deleteOne({refreshToken});
 
